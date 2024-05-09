@@ -29,8 +29,10 @@ const Block1 = new Block({
   hash: '2',
   data: 'hello',
 })
-const genesisBlock = Block.genesis()
+// const genesisBlock = Block.genesis()
 // console.log(Block1)
 // console.log(genesisBlock)
-result = Block.miningBlock({ prevBlock: Block1, data: 'hello' })
-console.log(result);
+// result = Block.miningBlock({ prevBlock: Block1, data: 'hell' })
+// console.log(result);
+
+module.exports = Block
