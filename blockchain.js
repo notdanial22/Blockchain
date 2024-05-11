@@ -13,11 +13,15 @@ class Blockchain {
   this.chain.push(newBlock);
  }
 
- // isChainValid () {
+ // static isChainValid (chain) {
+ //   if (JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) {
+ //     return false
+ //   }
  //  for (let i = 1; i < this.chain.length; i++) {
  //   const currentBlock = this.chain[i];
  //   const previousBlock = this.chain[i - 1];
- //   if (currentBlock.hash !== currentBlock.calculateHash()) {
+ //   const {timestamp,hash,previousHash,data} = chain[i];
+ //   if (chain[i].hash !== currentBlock) {
  //    return false;
  //   }
  //   if (currentBlock.previousHash !== previousBlock.hash) {
@@ -31,6 +35,7 @@ class Blockchain {
 const blockchain = new Blockchain();
 
 blockchain.addBlock({data : 'first block'});
+blockchain.addBlock({data : 'second block'});
 
 console.log(blockchain);
 
