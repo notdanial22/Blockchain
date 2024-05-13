@@ -1,4 +1,6 @@
-const Block = require('./block')
+const Block = require('./block');
+const cryptoHash = require('./hash-gen');
+
 
 class Blockchain {
  constructor () {
@@ -13,29 +15,36 @@ class Blockchain {
   this.chain.push(newBlock);
  }
 
- // static isChainValid (chain) {
- //   if (JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())) {
- //     return false
- //   }
- //  for (let i = 1; i < this.chain.length; i++) {
- //   const currentBlock = this.chain[i];
- //   const previousBlock = this.chain[i - 1];
- //   const {timestamp,hash,previousHash,data} = chain[i];
- //   if (chain[i].hash !== currentBlock) {
- //    return false;
- //   }
- //   if (currentBlock.previousHash !== previousBlock.hash) {
- //    return false;
- //   }
- //  }
- //  return true;
- // }
+  static isChainValid (chain)  {
+   const { timestamp, previousHash, data, hash } = chain[0]
+   if (previousHash !== Block.genesis.previousHash) {
+     return false
+   } 
+  for (let i = 1; i < chain.length; i++) {
+   const {timestamp,prevHash,hash,data} = chain[i];
+   
+   const realLastHash = chain[i -1].hash;
+   if (prevHash !== realLastHash){ 
+    console.log(`prev hash is wrong`);
+   }
+   const validatedHash = cryptoHash(timestamp,data,prevHash)
+   if (hash !== validatedHash) {
+    console.log(`hash is not valid`);
+   }
+  }
+  return true;
+ }
 }
 
 const blockchain = new Blockchain();
 
 blockchain.addBlock({data : 'first block'});
 blockchain.addBlock({data : 'second block'});
+
+
+const result  = Blockchain.isChainValid(blockchain.chain)
+
+// console.log(result);
 
 console.log(blockchain);
 
