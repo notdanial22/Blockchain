@@ -1,25 +1,53 @@
-const { GENESIS_DATA } = require('./config')
+const { GENESIS_DATA, MINE_RATE } = require('./config')
 const cryptoHash = require('./hash-gen')
 class Block {
-  constructor({ timestamp, prevHash, hash, data }) {
+  constructor({ timestamp, prevHash, hash, data, nonce, difficulty }) {
     this.timestamp = timestamp
     this.prevHash = prevHash
     this.hash = hash
     this.data = data
+    this.nonce = nonce
+    this.difficulty = difficulty
   }
   static genesis() {
     return new this(GENESIS_DATA)
   }
   static miningBlock({ prevBlock, data }) {
-    const timestamp = Date.now()
+    let hash, timestamp;
     const prevHash = prevBlock.hash
-    const hash = cryptoHash(timestamp, prevHash, data)
+
+    let  difficulty  = prevBlock.difficulty;
+    let nonce = 0
+
+    // console.log('Starting mining loop...')
+    do {
+      nonce++
+      timestamp = Date.now()
+      difficulty = Block.adjustDifficulty({
+        originalBlock : prevBlock,
+        timestamp,
+      });
+      hash = cryptoHash(timestamp, prevHash, data, nonce, difficulty)
+      // console.log('Nonce:', nonce, 'Hash:', hash)
+    } while (hash.substring(0, difficulty) !== "0".repeat(difficulty))
+
+    // console.log('Mining successful!')  
     return new this({
       timestamp,
       prevHash,
       data,
-      hash: cryptoHash(timestamp, prevHash, data),
+      hash,
+      nonce,
+      difficulty,
     })
+  }
+
+  static adjustDifficulty ({originalBlock , timestamp}) {
+    const {difficulty} = originalBlock
+    if (difficulty < 1) return 1;
+    const timeDifference = timestamp - originalBlock.timestamp
+    if (timeDifference <= MINE_RATE) return difficulty + 1;
+    return difficulty - 1;
   }
 }
 
@@ -32,7 +60,7 @@ const Block1 = new Block({
 // const genesisBlock = Block.genesis()
 // console.log(Block1)
 // console.log(genesisBlock)
-// result = Block.miningBlock({ prevBlock: Block1, data: 'hell' })
-// console.log(result);
+// result = Block.miningBlock({ prevBlock: Block1, data: 'hi' })
+// console.log(result)
 
 module.exports = Block
