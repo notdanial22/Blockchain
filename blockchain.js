@@ -35,6 +35,8 @@ class Blockchain {
   for (let i = 1; i < chain.length; i++) {
    const {timestamp,prevHash,hash,data,nonce,difficulty} = chain[i];
    
+   const lastDifficulty = chain[i - 1].difficulty;
+
    const realLastHash = chain[i -1].hash;
    if (prevHash !== realLastHash){ 
     console.log(`prev hash is wrong`);
@@ -43,6 +45,7 @@ class Blockchain {
    if (hash !== validatedHash) {
     console.log(`hash is not valid`);
    }
+   if (Math.abs(lastDifficulty - difficulty) > 1) return false
   }
   return true;
  }
@@ -54,6 +57,11 @@ blockchain.addBlock({data : 'first block'});
 blockchain.addBlock({data : 'second block'});
 blockchain.addBlock({data : 'third block'});
 blockchain.addBlock({data : 'fourth block'});
+blockchain.addBlock({data : 'fifth block'});
+blockchain.addBlock({data : 'sixth block'});
+blockchain.addBlock({data : 'seventh block'});
+blockchain.addBlock({data : 'eighth block'});
+blockchain.addBlock({data : 'ninth block'});
 
 
 const result  = Blockchain.isChainValid(blockchain.chain)
