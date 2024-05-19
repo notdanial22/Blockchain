@@ -68,6 +68,6 @@ const result  = Blockchain.isChainValid(blockchain.chain)
 
 // console.log(result);
 
-console.log(blockchain.chain);
+// console.log(blockchain.chain);
 
 module.exports = Blockchain;
